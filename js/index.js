@@ -51,6 +51,9 @@ function wheelStart() {
     killCount += Math.floor(wheelMoney / 150);
     document.getElementById("killCount").textContent = killCount;
     sendedData("СТАААААРТУЕММ")
+    document.getElementById("wheelMoney").disabled = true;
+    document.getElementById("setUp").disabled = true;
+    document.getElementById("count").disabled = true;
 }
 
 function pointCount() {

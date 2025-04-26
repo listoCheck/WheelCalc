@@ -82,7 +82,7 @@ button:hover {
 
 
 #pie-chart, #line-chart {
-    width: 100%;
+    width: 110%;
     max-width: 600px;
     height: 300px;
     margin: 30px auto;
