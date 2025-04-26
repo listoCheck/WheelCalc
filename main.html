@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Колесный Калькулятор</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/jpg" href="images/duck.png">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<header>Если что, можно заканчитвать ввод во всех текстовых полях по нажатии клавиши энтер</header>
+<body>
+<div id="popup" class="popup"></div>
+<label for="wheelMoney">Денег на колесе (в рублях):</label>
+<input type="text" id="wheelMoney" name="wheelMoney" class="calc-start"/>
+<label for="setUp">Сетап</label>
+<input type="checkbox" id="setUp" name="setUp"/>
+<button id="count">Посчитать</button>
+
+<h2>Надо сделать фраго-очков: <span id="killCount"></span></h2>
+
+<label for="frags">Киллов:</label>
+<input type="text" id="frags" name="frags" class="calc-input"/>
+
+<label for="assists">Помощей:</label>
+<input type="text" id="assists" name="assists" class="calc-input"/>
+
+<label for="points">Взято точек:</label>
+<input type="text" id="points" name="points" class="calc-input"/>
+
+<label for="drones">Сбито дронов:</label>
+<input type="text" id="drones" name="drones" class="calc-input"/>
+
+<label for="aerodinahui">Переверажено и уничтоженно:</label>
+<input type="text" id="aerodinahui" name="aerodinahui" class="calc-input"/>
+
+<label for="heliPoint">Взято точек на вертолете:</label>
+<input type="text" id="heliPoint" name="heliPoint" class="calc-input"/>
+
+<label for="_2500">Набил 2500 ОВ</label>
+<input type="checkbox" id="_2500" name="_2500"/>
+
+<label for="nuke">Сбросил ядерку</label>
+<input type="checkbox" id="nuke" name="nuke"/>
+
+<button id="countFight">Посчитать</button>
+
+<h2>Сделано фраго-очков: <span id="totalCount">0 (0)</span></h2>
+<h2>Немножечко статистики</h2>
+
+<div id="pie-chart"></div>
+<div id="line-chart"></div>
+
+<h2>История боёв</h2>
+<table id="history-table">
+    <thead>
+    <tr>
+        <th>№</th>
+        <th>Киллы</th>
+        <th>Ассисты</th>
+        <th>Точки</th>
+        <th>Дроны</th>
+        <th>Аэродинахуй</th>
+        <th>Точки на вертолёте</th>
+        <th>2500 ОВ</th>
+        <th>Ядерка</th>
+        <th>Фраго-Очки</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<h2>На случай если учет фрагов был случайно похерен:</h2>
+<label for="killsLost">Киллов было:</label>
+<input type="text" id="killsLost" name="killsLost" class="calc-lost"/>
+<label for="pointsLost">Фраго-очков было:</label>
+<input type="text" id="pointsLost" name="pointsLost" class="calc-lost"/>
+<button id="lost">Восстановить</button>
+
+
+<script src="js/index.js"></script>
+
+</body>
+</html>
