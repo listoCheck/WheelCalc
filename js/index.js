@@ -3,7 +3,8 @@ let realKills = 0
 let killPoints = 0;
 let startTime;
 let killCount = 0;
-let progressHistory = [];
+let progressHistory = []
+let fightHistory = []
 
 google.charts.load('current', {packages: ['corechart']});
 
@@ -66,8 +67,8 @@ function pointCount() {
     const _2500 = document.getElementById("_2500").checked ? 4 : 0;
     const nuke = document.getElementById("nuke").checked ? 4 : 0;
     realKills += kills;
-    killPoints += aerodinahui + (0.25 * assists) + (0.5 * (points + drones)) + (2 * heliPoint) + _2500 + nuke;
-    endCount += realKills + killPoints;
+    killPoints += aerodinahui + (0.25 * assists) + 0.5 * (points + drones) + (2 * heliPoint) + _2500 + nuke;
+    endCount = realKills + killPoints;
     if (endCount >= killCount) {
         sendedData(`ГООООООООООООЛ, колесо окончено, выполнил за ${(Date.now() - startTime)/(1000*60*60)} часов`);
     }
@@ -168,7 +169,7 @@ function addRowToHistoryTable(fragCount, assistCount, pointCount, droneCount, ae
         <td>${isNuke ? "Да" : "Нет"}</td>
         <td>${totalPoints}</td>
     `;
-
+    fightHistory = [fragCount, assistCount, pointCount, droneCount, aerodinahuiCount, heliPointCount, is2500, isNuke, totalPoints]
     tableBody.appendChild(newRow);
 }
 function sendedData(message) {
@@ -181,3 +182,24 @@ function sendedData(message) {
     }, 3000);
 }
 
+document.getElementById("edit_button").addEventListener("click", function () {
+    document.getElementById("frags").value = fightHistory[0];
+    document.getElementById("assists").value = fightHistory[1];
+    document.getElementById("points").value = fightHistory[2];
+    document.getElementById("drones").value = fightHistory[3];
+    document.getElementById("aerodinahui").value = fightHistory[4];
+    document.getElementById("heliPoint").value = fightHistory[5];
+    document.getElementById("_2500").checked = fightHistory[6];
+    document.getElementById("nuke").checked = fightHistory[7];
+    realKills -= fightHistory[0];
+    killPoints -= fightHistory[8];
+    endCount = realKills + killPoints;
+    const historyTable = document.getElementById('history-table');
+    const rows = historyTable.getElementsByTagName('tr');
+    const lastRow = rows[rows.length - 1];
+    lastRow.remove();
+});
+
+document.getElementById('wheelMoney').addEventListener('input', function (e) {
+    this.value = this.value.replace(/[^0-9]/g, '');
+});
