@@ -196,10 +196,18 @@ document.getElementById("edit_button").addEventListener("click", function () {
     endCount = realKills + killPoints;
     const historyTable = document.getElementById('history-table');
     const rows = historyTable.getElementsByTagName('tr');
-    const lastRow = rows[rows.length - 1];
-    lastRow.remove();
+    if (rows.length > 1) { // чтобы не удалить заголовок
+        historyTable.deleteRow(rows.length - 1);
+    }
+    progressHistory.pop();
+    drawPieChart(realKills, killPoints);
+    drawLineChart(progressHistory);
+    document.getElementById("totalCount").textContent = `${realKills} (${killPoints}) {${endCount}}`;
 });
 
-document.getElementById('wheelMoney').addEventListener('input', function (e) {
-    this.value = this.value.replace(/[^0-9]/g, '');
+const inputData = document.querySelectorAll('.calc-start, .calc-input, .calc-lost');
+inputData.forEach(input =>{
+    input.addEventListener('input', function (){
+        this.value = this.value.replace(/[^0-9]*/g, '');
+    });
 });
