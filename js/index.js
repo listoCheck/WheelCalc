@@ -189,7 +189,7 @@ function sendedData(message) {
 }
 
 document.getElementById("edit_button").addEventListener("click", function () {
-    if (remake) return;
+    if (remake || fightHistory.length === 0) return;
     document.getElementById("frags").value = fightHistory[0];
     document.getElementById("assists").value = fightHistory[1];
     document.getElementById("points").value = fightHistory[2];
