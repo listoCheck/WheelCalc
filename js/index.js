@@ -7,7 +7,8 @@ let progressHistory = []
 let fightHistory = []
 let remake = false;
 let input = true;
-let vehicle = 0;
+let vehicle = "";
+
 google.charts.load('current', {packages: ['corechart']});
 
 document.getElementById("count").addEventListener("click", wheelStart);
@@ -45,23 +46,31 @@ inputsLost.forEach(input => {
 });
 
 function wheelStart() {
+    killCount = parseInt(localStorage.getItem('killCount')) || 0;
+    vehicle = localStorage.getItem('vehicle') || null;
+    console.log(killCount)
     startTime = Date.now();
-    if (document.getElementById("setUp").checked) {
-        killCount = 70;
-    } else {
-        killCount = 50;
+    let myFlag = false;
+    if (killCount === 0) {
+        myFlag = true;
+        if (document.getElementById("setUp").checked) {
+            killCount = 70;
+        } else {
+            killCount = 50;
+        }
     }
     const wheelMoney = parseFloat(document.getElementById("wheelMoney").value);
-    if (isNaN(wheelMoney)){
+    if (isNaN(wheelMoney) && myFlag) {
         sendedData("ПУСТО, надо ввести в деньги за колесо")
         return;
     }
-    killCount += Math.floor(wheelMoney / 150);
+    if (myFlag) killCount += Math.floor(wheelMoney / 150);
     document.getElementById("killCount").textContent = killCount;
     sendedData("СТАААААРТУЕММ")
     document.getElementById("wheelMoney").disabled = true;
     document.getElementById("setUp").disabled = true;
     document.getElementById("count").disabled = true;
+    localStorage.setItem('killCount', 0);
 }
 
 function pointCount() {
@@ -77,8 +86,8 @@ function pointCount() {
     killPoints += aerodinahui + (0.25 * assists) + 0.5 * (points + drones) + (2 * heliPoint) + _2500 + nuke;
     endCount = realKills + killPoints;
     if (endCount >= killCount) {
-        sendedData(`ГООООООООООООЛ, колесо окончено, выполнил за ${(Date.now() - startTime)/(1000*60*60)} часов`);
-        document.getElementById("endStats").textContent = killPoints / ((Date.now() - startTime)/(1000*60*60));
+        sendedData(`ГООООООООООООЛ, колесо окончено, выполнил за ${(Date.now() - startTime) / (1000 * 60 * 60)} часов`);
+        document.getElementById("endStats").textContent = killPoints / ((Date.now() - startTime) / (1000 * 60 * 60));
     }
     const now = new Date();
     const timeString = now.toLocaleTimeString();
@@ -107,6 +116,7 @@ function lostMake() {
     document.getElementById("totalCount").textContent = `${realKills} (${killPoints}) {${endCount}}`;
     drawPieChart(realKills, killPoints);
 }
+
 function makeStats() {
     if (!startTime) return;
     const currentTime = Date.now();
@@ -138,7 +148,7 @@ function drawPieChart(realKills, killPoints) {
 }
 
 function drawLineChart(progressHistory) {
-    const dataArray = [['Номер подсчета', 'Фраго-Очки', { role: 'tooltip', type: 'string', p: { html: true } }]];
+    const dataArray = [['Номер подсчета', 'Фраго-Очки', {role: 'tooltip', type: 'string', p: {html: true}}]];
 
     progressHistory.forEach(([index, points, time]) => {
         dataArray.push([index, points, `Очки: ${points}\nВремя: ${time}`]);
@@ -152,10 +162,10 @@ function drawLineChart(progressHistory) {
         colors: ['mediumseagreen'],
         pointSize: 5,
         curveType: 'function',
-        legend: { position: 'bottom' },
-        chartArea: { width: '80%', height: '70%' },
-        vAxis: { minValue: 0 },
-        tooltip: { isHtml: true }
+        legend: {position: 'bottom'},
+        chartArea: {width: '80%', height: '70%'},
+        vAxis: {minValue: 0},
+        tooltip: {isHtml: true}
     };
 
     const chart = new google.visualization.LineChart(document.getElementById('line-chart'));
@@ -181,6 +191,7 @@ function addRowToHistoryTable(fragCount, assistCount, pointCount, droneCount, ae
     fightHistory = [fragCount, assistCount, pointCount, droneCount, aerodinahuiCount, heliPointCount, is2500, isNuke, totalPoints]
     tableBody.appendChild(newRow);
 }
+
 function sendedData(message) {
     const popup = document.getElementById('popup');
     popup.textContent = message;
@@ -217,13 +228,8 @@ document.getElementById("edit_button").addEventListener("click", function () {
 });
 
 const inputData = document.querySelectorAll('.calc-start, .calc-input, .calc-lost');
-inputData.forEach(input =>{
-    input.addEventListener('input', function (){
+inputData.forEach(input => {
+    input.addEventListener('input', function () {
         this.value = this.value.replace(/[^0-9]*/g, '');
     });
-});
-
-document.getElementById("rememberButton").addEventListener("click", function () {
-    killCount = parseInt(document.getElementById("fragNeed").value);
-    vehicle = document.getElementById("vehicle").value;
 });
