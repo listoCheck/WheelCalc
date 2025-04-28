@@ -5,6 +5,7 @@ let startTime;
 let killCount = 0;
 let progressHistory = []
 let fightHistory = []
+let remake = false;
 
 google.charts.load('current', {packages: ['corechart']});
 
@@ -49,6 +50,10 @@ function wheelStart() {
         killCount = 50;
     }
     const wheelMoney = parseFloat(document.getElementById("wheelMoney").value);
+    if (isNaN(wheelMoney)){
+        sendedData("ПУСТО, надо ввести в деньги за колесо")
+        return;
+    }
     killCount += Math.floor(wheelMoney / 150);
     document.getElementById("killCount").textContent = killCount;
     sendedData("СТАААААРТУЕММ")
@@ -88,6 +93,7 @@ function pointCount() {
     document.getElementById("nuke").checked = false;
     drawPieChart(realKills, killPoints);
     drawLineChart(progressHistory);
+    remake = false;
 }
 
 function lostMake() {
@@ -183,6 +189,7 @@ function sendedData(message) {
 }
 
 document.getElementById("edit_button").addEventListener("click", function () {
+    if (remake) return;
     document.getElementById("frags").value = fightHistory[0];
     document.getElementById("assists").value = fightHistory[1];
     document.getElementById("points").value = fightHistory[2];
@@ -203,6 +210,7 @@ document.getElementById("edit_button").addEventListener("click", function () {
     drawPieChart(realKills, killPoints);
     drawLineChart(progressHistory);
     document.getElementById("totalCount").textContent = `${realKills} (${killPoints}) {${endCount}}`;
+    remake = true;
 });
 
 const inputData = document.querySelectorAll('.calc-start, .calc-input, .calc-lost');
