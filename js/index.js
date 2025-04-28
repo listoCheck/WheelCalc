@@ -113,7 +113,7 @@ function drawPieChart(realKills, killPoints) {
     if (c < 0) {
         c = 0;
     }
-    const data = google.visualization.arrayToDataTable([['Тип', 'Количество'], ['Остаток', c], ['Киллы', realKills], ['Очки', killPoints],]);
+    const data = google.visualization.arrayToDataTable([['Тип', 'Количество'], ['Остаток', c], ['Киллы', realKills], ['Фраго-очки', killPoints],]);
 
     const options = {
         backgroundColor: 'transparent',

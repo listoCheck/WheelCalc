@@ -171,3 +171,46 @@ input[type="checkbox"]:checked::after {
 span{
     color: #cc3ed8;
 }
+#block_field{
+    font-size: 10px;
+    color: #4a4a4a;
+    margin-left: 10px;
+}
+
+footer {
+    width: 100vw;
+    font-family: monospace;
+    color: #BBBBBB;
+    text-align: center;
+    padding: 10px 0;
+    background: #101F27;
+    position: relative;
+    z-index: 10;
+    margin-left: calc(-50vw + 50%);
+}
+
+#github{
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: #cfcfcf;
+    color: #ccc;
+    border: 2px solid #555;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+#github:hover {
+    background-color: #444;
+    border-color: #777;
+}
+
+body::-webkit-scrollbar {
+    width: 5px;
+}
+body::-webkit-scrollbar-track {
+    background: #444;
+}
+body::-webkit-scrollbar-thumb {
+    background-color: #777;
+    border-radius: 50px;
+}
