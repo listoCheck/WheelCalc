@@ -8,15 +8,10 @@ let fightHistory = []
 let remake = false;
 let input = true;
 let vehicle = "";
-
 google.charts.load('current', {packages: ['corechart']});
-
 document.getElementById("count").addEventListener("click", wheelStart);
-
 document.getElementById("countFight").addEventListener("click", pointCount);
-
 document.getElementById("lost").addEventListener("click", lostMake);
-
 const inputsStart = document.querySelectorAll('.calc-start');
 
 inputsStart.forEach(input => {
@@ -91,10 +86,9 @@ function pointCount() {
     }
     const now = new Date();
     const timeString = now.toLocaleTimeString();
-    addRowToHistoryTable(kills, assists, points, drones, aerodinahui, heliPoint, _2500, nuke, aerodinahui + (0.25 * assists) + (0.5 * (points + drones)) + (2 * heliPoint) + _2500 + nuke);
+    addRowToHistoryTable(kills, assists, points, drones, aerodinahui, heliPoint, _2500, nuke, killPoints);
     progressHistory.push([progressHistory.length + 1, endCount, timeString]);
     document.getElementById("totalCount").textContent = `${realKills} (${killPoints}) {${endCount}}`;
-
     document.getElementById("frags").value = "";
     document.getElementById("assists").value = "";
     document.getElementById("points").value = "";
@@ -103,8 +97,7 @@ function pointCount() {
     document.getElementById("heliPoint").value = "";
     document.getElementById("_2500").checked = false;
     document.getElementById("nuke").checked = false;
-    drawPieChart(realKills, killPoints);
-    drawLineChart(progressHistory);
+    updateChartsFromTable();
     remake = false;
 }
 
@@ -117,15 +110,6 @@ function lostMake() {
     drawPieChart(realKills, killPoints);
 }
 
-function makeStats() {
-    if (!startTime) return;
-    const currentTime = Date.now();
-    const elapsedMinutes = (currentTime - startTime) / 60000;
-    const totalPoints = realKills + killPoints;
-    const pointsPerMinute = (totalPoints / elapsedMinutes).toFixed(2);
-    document.getElementById("totalCount").textContent = `Производительность: ${pointsPerMinute} очков в минуту`;
-}
-
 
 function drawPieChart(realKills, killPoints) {
     let c = killCount - realKills - killPoints;
@@ -133,7 +117,6 @@ function drawPieChart(realKills, killPoints) {
         c = 0;
     }
     const data = google.visualization.arrayToDataTable([['Тип', 'Количество'], ['Остаток', c], ['Киллы', realKills], ['Фраго-очки', killPoints],]);
-
     const options = {
         backgroundColor: 'transparent',
         pieHole: 0.4,
@@ -142,20 +125,16 @@ function drawPieChart(realKills, killPoints) {
         legend: {textStyle: {fontSize: 13}},
         tooltip: {text: 'percentage'}
     };
-
     const pieChart = new google.visualization.PieChart(document.getElementById('pie-chart'));
     pieChart.draw(data, options);
 }
 
 function drawLineChart(progressHistory) {
     const dataArray = [['Номер подсчета', 'Фраго-Очки', {role: 'tooltip', type: 'string', p: {html: true}}]];
-
     progressHistory.forEach(([index, points, time]) => {
         dataArray.push([index, points, `Очки: ${points}\nВремя: ${time}`]);
     });
-
     const data = google.visualization.arrayToDataTable(dataArray);
-
     const options = {
         title: 'Прогресс выполнения',
         backgroundColor: 'transparent',
@@ -172,10 +151,27 @@ function drawLineChart(progressHistory) {
     chart.draw(data, options);
 }
 
+function sendedData(message) {
+    const popup = document.getElementById('popup');
+    popup.textContent = message;
+    popup.style.display = 'block';
+    popup.style.backgroundColor = 'green';
+    setTimeout(function () {
+        popup.style.display = 'none';
+    }, 3000);
+}
+
+
+const inputData = document.querySelectorAll('.calc-start, .calc-input, .calc-lost');
+inputData.forEach(input => {
+    input.addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9]*/g, '');
+    });
+});
+
 function addRowToHistoryTable(fragCount, assistCount, pointCount, droneCount, aerodinahuiCount, heliPointCount, is2500, isNuke, totalPoints) {
     const tableBody = document.querySelector("#history-table tbody");
     const newRow = document.createElement("tr");
-
     newRow.innerHTML = `
         <td>${tableBody.children.length + 1}</td>
         <td>${fragCount}</td>
@@ -187,49 +183,84 @@ function addRowToHistoryTable(fragCount, assistCount, pointCount, droneCount, ae
         <td>${is2500 ? "Да" : "Нет"}</td>
         <td>${isNuke ? "Да" : "Нет"}</td>
         <td>${totalPoints}</td>
+        <td><button class="edit-btn">Редактировать</button></td>
     `;
-    fightHistory = [fragCount, assistCount, pointCount, droneCount, aerodinahuiCount, heliPointCount, is2500, isNuke, totalPoints]
+
     tableBody.appendChild(newRow);
 }
 
-function sendedData(message) {
-    const popup = document.getElementById('popup');
-    popup.textContent = message;
-    popup.style.display = 'block';
-    popup.style.backgroundColor = 'green';
-    setTimeout(function () {
-        popup.style.display = 'none';
-    }, 3000);
-}
-
-document.getElementById("edit_button").addEventListener("click", function () {
-    if (remake || fightHistory.length === 0) return;
-    document.getElementById("frags").value = fightHistory[0];
-    document.getElementById("assists").value = fightHistory[1];
-    document.getElementById("points").value = fightHistory[2];
-    document.getElementById("drones").value = fightHistory[3];
-    document.getElementById("aerodinahui").value = fightHistory[4];
-    document.getElementById("heliPoint").value = fightHistory[5];
-    document.getElementById("_2500").checked = fightHistory[6];
-    document.getElementById("nuke").checked = fightHistory[7];
-    realKills -= fightHistory[0];
-    killPoints -= fightHistory[8];
-    endCount = realKills + killPoints;
-    const historyTable = document.getElementById('history-table');
-    const rows = historyTable.getElementsByTagName('tr');
-    if (rows.length > 1) { // чтобы не удалить заголовок
-        historyTable.deleteRow(rows.length - 1);
+document.querySelector("#history-table tbody").addEventListener("click", function (e) {
+    if (e.target.classList.contains("edit-btn")) {
+        const row = e.target.closest("tr");
+        if (e.target.textContent === "Редактировать") {
+            for (let i = 1; i <= 8; i++) {
+                const currentText = row.cells[i].textContent.trim();
+                if (i === 7 || i === 8) {
+                    row.cells[i].innerHTML = `
+                        <select>
+                            <option value="Да" ${currentText === "Да" ? "selected" : ""}>Да</option>
+                            <option value="Нет" ${currentText === "Нет" ? "selected" : ""}>Нет</option>
+                        </select>`;
+                } else {
+                    row.cells[i].innerHTML = `<input type="number" value="${currentText}" style="width: 60px;">`;
+                }
+            }
+            e.target.textContent = "Сохранить";
+        } else if (e.target.textContent === "Сохранить") {
+            let fragCount = parseInt(row.cells[1].querySelector("input").value) || 0;
+            let assistCount = parseInt(row.cells[2].querySelector("input").value) || 0;
+            let pointCount = parseInt(row.cells[3].querySelector("input").value) || 0;
+            let droneCount = parseInt(row.cells[4].querySelector("input").value) || 0;
+            let aerodinahuiCount = parseInt(row.cells[5].querySelector("input").value) || 0;
+            let heliPointCount = parseInt(row.cells[6].querySelector("input").value) || 0;
+            let is2500 = row.cells[7].querySelector("select").value === "Да" ? 4 : 0;
+            let isNuke = row.cells[8].querySelector("select").value === "Да" ? 4 : 0;
+            let totalPoints = aerodinahuiCount + (0.25 * assistCount) + 0.5 * (pointCount + droneCount) + (2 * heliPointCount) + is2500 + isNuke;
+            row.cells[1].textContent = fragCount;
+            row.cells[2].textContent = assistCount;
+            row.cells[3].textContent = pointCount;
+            row.cells[4].textContent = droneCount;
+            row.cells[5].textContent = aerodinahuiCount;
+            row.cells[6].textContent = heliPointCount;
+            row.cells[7].textContent = is2500 ? "Да" : "Нет";
+            row.cells[8].textContent = isNuke ? "Да" : "Нет";
+            row.cells[9].textContent = totalPoints.toFixed(2);
+            e.target.textContent = "Редактировать";
+            updateChartsFromTable();
+        }
     }
-    progressHistory.pop();
+});
+
+function updateChartsFromTable() {
+    realKills = 0;
+    killPoints = 0;
+    endCount = 0;
+    progressHistory = [];
+    const tableBody = document.querySelector("#history-table tbody");
+    const rows = tableBody.querySelectorAll('tr');
+    let index = 1;
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 10) {
+            const fragCount = parseInt(cells[1].textContent) || 0;
+            const assistCount = parseInt(cells[2].textContent) || 0;
+            const pointCount = parseInt(cells[3].textContent) || 0;
+            const droneCount = parseInt(cells[4].textContent) || 0;
+            const aerodinahuiCount = parseInt(cells[5].textContent) || 0;
+            const heliPointCount = parseInt(cells[6].textContent) || 0;
+            const is2500 = cells[7].textContent.trim() === "Да" ? 4 : 0;
+            const isNuke = cells[8].textContent.trim() === "Да" ? 4 : 0;
+            const totalPoints = aerodinahuiCount + (0.25 * assistCount) + (0.5 * (pointCount + droneCount)) + (2 * heliPointCount) + is2500 + isNuke;
+            realKills += fragCount;
+            killPoints += totalPoints;
+            endCount = realKills + killPoints;
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            progressHistory.push([index, endCount, timeString]);
+            index++;
+        }
+    });
+    document.getElementById("totalCount").textContent = `${realKills} (${killPoints}) {${endCount}}`;
     drawPieChart(realKills, killPoints);
     drawLineChart(progressHistory);
-    document.getElementById("totalCount").textContent = `${realKills} (${killPoints}) {${endCount}}`;
-    remake = true;
-});
-
-const inputData = document.querySelectorAll('.calc-start, .calc-input, .calc-lost');
-inputData.forEach(input => {
-    input.addEventListener('input', function () {
-        this.value = this.value.replace(/[^0-9]*/g, '');
-    });
-});
+}

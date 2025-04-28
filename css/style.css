@@ -220,3 +220,61 @@ h3{
     color: #BBBBBB !important;
     text-decoration: none;
 }
+
+input {
+    width: 80px;
+    padding: 4px 6px;
+    font-size: 14px;
+    border: 2px solid #4a4a4a;
+    border-radius: 5px;
+    background-color: #777;
+    box-sizing: border-box;
+}
+
+.edit-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    font-size: 13px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.edit-btn:hover {
+    background-color: #45a049;
+}
+
+.save-btn {
+    background-color: #2196F3;
+    color: white;
+    padding: 5px 10px;
+    font-size: 13px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.save-btn:hover {
+    background-color: #0b7dda;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+select {
+    width: 80px;
+    padding: 8px 10px;
+    font-size: 14px;
+    border: 3px solid #4a4a4a;
+    border-radius: 7px;
+    background-color: #7c7979;
+    color: #0b0b0b;
+    cursor: pointer;
+}
