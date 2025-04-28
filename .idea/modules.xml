@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/k2counter.iml" filepath="$PROJECT_DIR$/.idea/k2counter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/WheelCalc.iml" filepath="$PROJECT_DIR$/.idea/WheelCalc.iml" />
     </modules>
   </component>
 </project>

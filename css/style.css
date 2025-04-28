@@ -186,7 +186,7 @@ footer {
     background: #101F27;
     position: relative;
     z-index: 10;
-    margin-left: calc(-50vw + 50%);
+    margin-left: -15px;
 }
 
 #github{
@@ -215,4 +215,8 @@ body::-webkit-scrollbar-thumb {
 }
 h3{
     font-size: 16px;
+}
+#forme, #forme:visited{
+    color: #BBBBBB !important;
+    text-decoration: none;
 }

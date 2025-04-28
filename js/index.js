@@ -6,7 +6,8 @@ let killCount = 0;
 let progressHistory = []
 let fightHistory = []
 let remake = false;
-
+let input = true;
+let vehicle = 0;
 google.charts.load('current', {packages: ['corechart']});
 
 document.getElementById("count").addEventListener("click", wheelStart);
@@ -16,6 +17,7 @@ document.getElementById("countFight").addEventListener("click", pointCount);
 document.getElementById("lost").addEventListener("click", lostMake);
 
 const inputsStart = document.querySelectorAll('.calc-start');
+
 inputsStart.forEach(input => {
     input.addEventListener('keypress', function (e) {
         if (e.key === "Enter") {
@@ -76,6 +78,7 @@ function pointCount() {
     endCount = realKills + killPoints;
     if (endCount >= killCount) {
         sendedData(`ГООООООООООООЛ, колесо окончено, выполнил за ${(Date.now() - startTime)/(1000*60*60)} часов`);
+        document.getElementById("endStats").textContent = killPoints / ((Date.now() - startTime)/(1000*60*60));
     }
     const now = new Date();
     const timeString = now.toLocaleTimeString();
@@ -218,4 +221,9 @@ inputData.forEach(input =>{
     input.addEventListener('input', function (){
         this.value = this.value.replace(/[^0-9]*/g, '');
     });
+});
+
+document.getElementById("rememberButton").addEventListener("click", function () {
+    killCount = parseInt(document.getElementById("fragNeed").value);
+    vehicle = document.getElementById("vehicle").value;
 });
